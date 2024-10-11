@@ -8,7 +8,6 @@ import os
 import streamlit as st
 
 gpg = gnupg.GPG()
-# passphrase = os.environ.get("GRIN")
 passphrase = st.secrets["GRIN"]
 
 if "processed_file" not in st.session_state:
