@@ -37,7 +37,7 @@ if file is not None and st.session_state.processed_file is None:
     for f in folder:
         if f.endswith("jp2") or f.endswith("tif"):
             image_files.append(f)
-
+    image_files.sort()
     total = len(image_files)
     images = []
     progress_bar = st.progress(0, text="Processing...")
