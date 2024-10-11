@@ -7,18 +7,20 @@ import time
 import os
 import streamlit as st
 
+
+st.set_page_config(page_title="GRIN to PDF", page_icon="📄")
+st.title("GRIN to PDF")
 gpg = gnupg.GPG()
 passphrase = st.secrets["GRIN"]
-
 if "processed_file" not in st.session_state:
     st.session_state.processed_file = None
 
-st.title("GRIN to PDF")
+# file uploader
 file = st.file_uploader("Upload a gpg file", label_visibility="hidden", type="gpg")
 if file is not None and st.session_state.processed_file is None:
 
+    # decrypt
     decrypted_data = gpg.decrypt_file(file, passphrase=passphrase)
-
     if not decrypted_data.ok:
         raise ValueError("Decryption failed: {}".format(decrypted_data.stderr))
     decrypted = f"{file.name[:-4]}"
@@ -28,6 +30,7 @@ if file is not None and st.session_state.processed_file is None:
     st.write(f"File decrypted successfully to {decrypted}")
     st.write("Extracting...")
 
+    # extract
     with tarfile.open(decrypted) as tar:
         tar.extractall("./book")
 
@@ -76,6 +79,7 @@ if file is not None and st.session_state.processed_file is None:
             pdf_bytes = pdf_file.read()
         st.session_state.processed_file = pdf_bytes
     st.success("Completed successfully")
+# download button
 if st.session_state.processed_file is not None:
     st.download_button(
         "Download PDF",
